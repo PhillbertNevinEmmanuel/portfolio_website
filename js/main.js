@@ -565,6 +565,7 @@ var contactForm = function() {
           data: $(form).serialize(),
           dataType: "json",
           headers: { "Accept": "application/json" },
+          crossDomain: true, // added
 
           beforeSend: function() { 
             $submit.css('display', 'block').text(waitText);
@@ -579,6 +580,20 @@ var contactForm = function() {
             form.reset();
           },
           error: function(xhr) {
+            console.log("XHR Status:", xhr.status, xhr); // debug
+
+            if (xhr.status === 200) {  
+              // Treat redirect response as success
+              $('#form-message-warning').hide();
+              $('#contactForm').fadeOut();
+              setTimeout(function(){
+                $('#form-message-success').fadeIn();
+              }, 400);
+              $submit.css('display', 'none');
+              form.reset();
+              return;
+            }
+
             let msg = "Something went wrong. Please try again.";
             if (xhr.responseJSON && xhr.responseJSON.error) {
               msg = xhr.responseJSON.error;
