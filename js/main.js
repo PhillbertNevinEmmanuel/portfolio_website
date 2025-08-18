@@ -533,65 +533,63 @@ var jarallaxPlugin = function() {
 };
 
 var contactForm = function() {
-	if ($('#contactForm').length > 0 ) {
-		$( "#contactForm" ).validate( {
-			rules: {
-				name: "required",
-				email: {
-					required: true,
-					email: true
-				},
-				message: {
-					required: true,
-					minlength: 5
-				}
-			},
-			messages: {
-				name: "Please enter your name",
-				email: "Please enter a valid email address",
-				message: "Please enter a message"
-			},
-			errorElement: 'span',
-			errorLabelContainer: '.form-error',
-			/* submit via ajax */
-			submitHandler: function(form) {		
-				var $submit = $('.submitting'),
-					waitText = 'Submitting...';
+  if ($('#contactForm').length > 0 ) {
+    $("#contactForm").validate({
+      rules: {
+        name: "required",
+        email: {
+          required: true,
+          email: true
+        },
+        message: {
+          required: true,
+          minlength: 5
+        }
+      },
+      messages: {
+        name: "Please enter your name",
+        email: "Please enter a valid email address",
+        message: "Please enter a message"
+      },
+      errorElement: 'span',
+      errorLabelContainer: '.form-error',
 
-				$.ajax({   	
-			      type: "POST",
-			      url: "https://formspree.io/f/mblkeabw",
-			      data: $(form).serialize(),
+      /* submit via ajax */
+      submitHandler: function(form) {
+        var $submit = $('.submitting'),
+            waitText = 'Submitting...';
 
-			      beforeSend: function() { 
-			      	$submit.css('display', 'block').text(waitText);
-			      },
-			      success: function(msg) {
-	               if (msg == 'OK') {
-	               	$('#form-message-warning').hide();
-			            setTimeout(function(){
-	               		$('#contactForm').fadeOut();
-	               	}, 1000);
-			            setTimeout(function(){
-			               $('#form-message-success').fadeIn();   
-	               	}, 1400);
-		               
-		            } else {
-		               $('#form-message-warning').html(msg);
-			            $('#form-message-warning').fadeIn();
-			            $submit.css('display', 'none');
-		            }
-			      },
-			      error: function() {
-			      	$('#form-message-warning').html("Something went wrong. Please try again.");
-			         $('#form-message-warning').fadeIn();
-			         $submit.css('display', 'none');
-			      }
-		      });    		
-	  		}
-			
-		} );
-	}
+        $.ajax({
+          type: "POST",
+          url: "https://formspree.io/f/mblkeabw",
+          data: $(form).serialize(),
+          dataType: "json",
+          headers: { "Accept": "application/json" },
+
+          beforeSend: function() { 
+            $submit.css('display', 'block').text(waitText);
+          },
+          success: function() {
+            $('#form-message-warning').hide();
+            $('#contactForm').fadeOut();
+            setTimeout(function(){
+              $('#form-message-success').fadeIn();
+            }, 400);
+            $submit.css('display', 'none');
+            form.reset();
+          },
+          error: function(xhr) {
+            let msg = "Something went wrong. Please try again.";
+            if (xhr.responseJSON && xhr.responseJSON.error) {
+              msg = xhr.responseJSON.error;
+            }
+            $('#form-message-warning').html(msg).fadeIn();
+            $submit.css('display', 'none');
+          }
+        });
+      }
+    });
+  }
 };
 
 var stickyFillPlugin = function() {
