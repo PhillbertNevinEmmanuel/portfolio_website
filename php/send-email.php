@@ -1,5 +1,8 @@
 <?php
 
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 // Replace this with your own email address
 $to = 'nevinphilbert15@gmail.com';
 
@@ -15,7 +18,7 @@ if($_POST) {
 
    $name = trim(stripslashes($_POST['name']));
    $email = trim(stripslashes($_POST['email']));
-   $subject = trim(stripslashes($_POST['subject']));
+   $subject = isset($_POST['subject']) ? trim(stripslashes($_POST['subject'])) : '';
    $contact_message = trim(stripslashes($_POST['message']));
 
    
@@ -40,9 +43,12 @@ if($_POST) {
    ini_set("sendmail_from", $to); // for windows server
    $mail = mail($to, $subject, $message, $headers);
 
-	if ($mail) { echo "OK"; }
-   else { echo "Something went wrong. Please try again."; }
-
+	if ($mail) {
+      echo "OK";
+   } else {
+      echo "Something went wrong. Please try again.<br>";
+      print_r(error_get_last());
+   }
 }
 
 ?>
