@@ -397,9 +397,8 @@ mark,
   height: auto; }
 
 .img-fluid-portfolio-section {
-  max-width: 120%;
-  height: auto;
-}
+  max-width: 100%;
+  height: auto; }
 
 .img-thumbnail {
   padding: 0.25rem;
